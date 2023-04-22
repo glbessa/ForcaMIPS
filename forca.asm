@@ -2,9 +2,12 @@
 	num_words: .word 36
 	max_errors: .word 10
 	underline: .ascii "-"
+	
 	msg1: .asciiz "Chances: "
 	msg2: .asciiz "Voce perdeu.\nBusque conhecimento - ET Bilu."
 	msg3: .asciiz "Voce ganhou, ajude o proximo a ganhar tambem."
+	menu1: .asciiz "Escolha uma opcao:\n\n1- Jogar\n2-Sair\n"
+	
 	words:
 	.asciiz "PALAVRA"
 	.asciiz "GABRIEL"
@@ -43,6 +46,7 @@
 	.asciiz "ROXO"
 	.asciiz "VINAGRE"
 	.asciiz "RESSACA"
+
 	word_to_print:
 	.space 2000
 .text
@@ -50,6 +54,17 @@
 	la $s1, words # words base addr
 	lb $s2, underline # underline
 	lw $s3, max_errors # max_errors
+	
+	# --------------------------- MENU --------------------------- 
+	li $v0, 4 # print string code
+	la $a0, menu1 # argument of print string
+	syscall
+	
+	li $v0, 5 # read int
+	syscall
+	
+	beq $v0, 2, exit_option
+	# --------------------------- FIM MENU --------------------------- 
 	
 	jal raffleWord
 	move $s4, $v0 # s4 -> raffled word
@@ -232,6 +247,7 @@
 		li $v0, 4 # print string code
 		move $a0, $s4 # argument of print string
 		syscall
-		
+	
+	exit_option:	
 		li $v0, 10 # argument of exit
 		syscall
